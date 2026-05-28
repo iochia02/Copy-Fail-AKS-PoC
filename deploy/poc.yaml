@@ -2,6 +2,7 @@ apiVersion: apps/v1
 kind: Deployment
 metadata:
   name: copy-fail-poc
+  namespace: tenant-blue
   labels:
     app.kubernetes.io/name: copy-fail-poc
     app.kubernetes.io/part-of: cve-2026-31431
@@ -22,12 +23,12 @@ spec:
         - operator: Exists
       containers:
         - name: copy-fail-poc
-          image: ghcr.io/percivalll/copy-fail-cve-2026-31431-kubernetes-poc:latest
+          image: image-name
           imagePullPolicy: Always
           command:
             - /bin/sh
             - -c
-            - /bin/copyfail -target /usr/sbin/ipset && sleep 365d
+            - sleep 365d
           securityContext:
             allowPrivilegeEscalation: false
             readOnlyRootFilesystem: false

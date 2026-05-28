@@ -1,0 +1,43 @@
+role: "Agent"
+customConfig:
+  data_dir: /vector-data-dir
+  api:
+    enabled: true
+    address: 127.0.0.1:8686
+  sources:
+    tetragon_logs:
+      type: file
+      include:
+        - /var/run/cilium/tetragon/tetragon.log
+  transforms:
+    modify:
+      type: remap
+      inputs:
+        - tetragon_logs
+      source: |
+              . = parse_json!(.message)
+              .TimeGenerated = del(.time)
+  sinks:
+   azure_monitor_tetragon:
+    type: azure_logs_ingestion
+    inputs:
+      - modify
+    endpoint: "vector-endpoint"
+    dcr_immutable_id: "dcr-id"
+    stream_name: "Custom-CopyFail_CL"
+    auth:
+      azure_credential_kind: "client_secret_credential"
+      azure_client_id: "client-id"
+      azure_client_secret: "client-secret"
+      azure_tenant_id: "tenant-id"
+
+extraVolumes:
+- name: tetra-log
+  hostPath:
+    path: "/var/run/cilium/tetragon/"
+extraVolumeMounts:
+  - name: tetra-log
+    mountPath: "/var/run/cilium/tetragon/"
+    readOnly: true
+
+logLevel: "debug"

@@ -17,7 +17,7 @@ all: build
 
 payload: $(PAYLOAD)
 $(PAYLOAD): payload/payload.c payload/nolibc/nolibc.h
-	$(CC) -static -nostdlib -include payload/nolibc/nolibc.h -o $@ $<
+	$(CC) -static -nostdlib -O3 -include payload/nolibc/nolibc.h -o $@ $<
 
 # Build the Go exploit binary (embeds the payload).
 build: $(PAYLOAD)

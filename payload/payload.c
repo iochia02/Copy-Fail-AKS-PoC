@@ -34,25 +34,25 @@
   * syscall() macro (see nolibc/sys/syscall.h) and an execve(). The
   * __NR_* constants come from the toolchain's <asm/unistd.h>. */
  int main(void) {
-     const char msg[] = "[*] success";
-     int fd;
- 
-     mkdir("/mnt", 0755);
- 
-     if (mount("/dev/vda3", "/mnt", "ext4", 0, NULL))
-         return 1;
- 
-     fd = open("/mnt/root/res", O_WRONLY | O_CREAT | O_TRUNC, 0644);
-     if (fd < 0)
-         return 1;
- 
-     if (write(fd, msg, sizeof(msg) - 1) != (ssize_t)(sizeof(msg) - 1)) {
-         close(fd);
-         return 1;
-     }
- 
-     close(fd);
- 
-     return 0;
- }
- 
+    const char msg[] = "[*] success";
+    int fd;
+
+    mkdir("/mnt", 0755);
+
+    if (mount("/dev/sda1", "/mnt", "ext4", 0, NULL))
+        return 1;
+
+    fd = open("/mnt/root/res", O_WRONLY | O_CREAT | O_TRUNC, 0644);
+    if (fd < 0)
+        return 1;
+
+    if (write(fd, msg, sizeof(msg) - 1) != (ssize_t)(sizeof(msg) - 1)) {
+        close(fd);
+        return 1;
+    }
+
+    close(fd);
+    umount2("/mnt", 2);
+
+    return 0;
+}

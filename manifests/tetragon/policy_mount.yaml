@@ -1,0 +1,18 @@
+apiVersion: cilium.io/v1alpha1
+kind: TracingPolicy
+metadata:
+  name: "monitor-mounts"
+spec:
+  kprobes:
+  - call: "sys_mount"
+    syscall: true
+    args:
+      - index: 0
+        type: "string"
+      - index: 1
+        type: "string"
+      - index: 2
+        type: "string"
+    selectors:
+    - matchActions:
+      - action: Post
